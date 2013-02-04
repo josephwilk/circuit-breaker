@@ -1,5 +1,7 @@
 # Circuit Breaker
 
+[![Build Status](https://travis-ci.org/josephwilk/circuit-breaker.png?branch=master)](https://travis-ci.org/josephwilk/circuit-breaker)
+
 A Clojure library for the circuit breaker pattern:
 
 http://en.wikipedia.org/wiki/Circuit_breaker_design_pattern
