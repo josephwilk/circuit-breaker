@@ -19,12 +19,8 @@
 (defn- exception-counter [circuit-name]
   @(circuit-name @_circuit-breakers-counters))
 
-(defn- update-circuit [breakers circuit-name]
-  (let [counter @(circuit-name breakers)]
-    (assoc breakers circuit-name (atom (inc counter)))))
-
 (defn- inc-counter [circuit-name]
-  (swap! _circuit-breakers-counters update-circuit circuit-name))
+  (swap! (circuit-name @_circuit-breakers-counters) inc))
 
 (defn- failure-count [circuit-name]
   (exception-counter circuit-name))
