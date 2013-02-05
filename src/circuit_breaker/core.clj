@@ -51,13 +51,16 @@
   (swap! _circuit-breakers-config   merge {circuit-name (atom settings)})
   (swap! _circuit-breakers-open     merge {circuit-name (atom nil)}))
 
-(defn wrap-with-circuit-breaker [circuit-name method-that-might-error]
-  (if-not (tripped? circuit-name)
-    (try
-      (let [result (method-that-might-error)]
-        (record-success circuit-name)
-        result)
+(defn- closed-circuit-path [circuit-name method-that-might-error]
+  (try
+    (let [result (method-that-might-error)]
+      (record-success circuit-name)
+      result)
     (catch Exception e
       (logger/error e)
-      (record-failure circuit-name)
-      e))))
+      (record-failure circuit-name))))
+
+(defn wrap-with-circuit-breaker [circuit-name method-that-might-error &[default-method]]
+  (if (tripped? circuit-name)
+    (when default-method (default-method))
+    (closed-circuit-path circuit-name method-that-might-error)))

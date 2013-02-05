@@ -14,9 +14,14 @@ Add the dependency from https://clojars.org/circuit-breaker to your project.clj 
 ## Usage
 
 ```clojure
-(defncircuitbreaker :memcache {:timeout 30 :threshold 1})
+
+;If it errors more than 2 stop trying the thing until 30 seconds have passed
+(defncircuitbreaker :memcache {:timeout 30 :threshold 2})
 
 (wrap-with-circuit-breaker :memcache (fn [] do-something-that-might-exception))
+
+;with a default method called when the circuit is broken
+(wrap-with-circuit-breaker :memcache (fn [] do-something-that-might-exception) (fn [] :some-sensible-default-when-its-broken))
 ```
 
 ##License
