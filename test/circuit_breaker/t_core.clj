@@ -38,11 +38,12 @@
       
       
 (facts "wrap-with-circuit-breaker with a default"
-  (fact "it should run the default if the circuit is broken"
+  (fact "it should run the default if the method errors"
     (defncircuitbreaker :service-x {:timeout 1 :threshold 1})
 
     (let [random-guid (guid)]
-      (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))) (fn [] :default)) =not=> :default 
-      (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))) (fn [] :default)) =not=> :default
+      (wrap-with-circuit-breaker :service-x (fn [] :success) (fn [] :default)) =not=> :default
+      (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))) (fn [] :default)) => :default 
+      (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))) (fn [] :default)) => :default 
 
       (wrap-with-circuit-breaker :service-x (fn [] random-guid) (fn [] :default)) => :default)))

@@ -34,15 +34,6 @@
 (defn- timeout-exceeded? [circuit-name]
   (> (time/in-secs (time/interval (time-since-broken circuit-name) (time/now))) (timeout-in-seconds circuit-name)))
 
-(defn- closed-circuit-path [circuit-name method-that-might-error]
-  (try
-    (let [result (method-that-might-error)]
-      (record-success circuit-name)
-      result)
-    (catch Exception e
-      (logger/error e)
-      (record-failure circuit-name))))
-
 (defn record-failure [circuit-name]
   (inc-counter circuit-name)
   (when (> (failure-count circuit-name) (failure-threshold circuit-name))
@@ -51,6 +42,16 @@
 (defn record-success [circuit-name]
   (swap! _circuit-breakers-open assoc circuit-name (atom nil))
   (swap! _circuit-breakers-counters assoc circuit-name (atom 0)))
+
+(defn- closed-circuit-path [circuit-name method-that-might-error default-method]
+  (try
+    (let [result (method-that-might-error)]
+      (record-success circuit-name)
+      result)
+    (catch Exception e
+      (logger/error e)
+      (record-failure circuit-name)
+      (when default-method (default-method)))))
 
 (defn tripped? [circuit-name]
   (and (breaker-open? circuit-name) (not (timeout-exceeded? circuit-name))))
@@ -63,4 +64,4 @@
 (defn wrap-with-circuit-breaker [circuit-name method-that-might-error &[default-method]]
   (if (tripped? circuit-name)
     (when default-method (default-method))
-    (closed-circuit-path circuit-name method-that-might-error)))
+    (closed-circuit-path circuit-name method-that-might-error default-method)))
