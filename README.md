@@ -21,7 +21,8 @@ Add the dependency from https://clojars.org/circuit-breaker to your project.clj 
 (wrap-with-circuit-breaker :memcache (fn [] do-something-that-might-exception))
 
 ;with a default method called when the circuit is broken
-(wrap-with-circuit-breaker :memcache (fn [] do-something-that-might-exception) (fn [] :some-sensible-default-when-its-broken))
+(let [default-method (fn [] :some-sensible-default-when-its-broken)]
+  (wrap-with-circuit-breaker :memcache (fn [] do-something-that-might-exception) default-method))
 ```
 
 ##License
