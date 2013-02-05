@@ -21,4 +21,17 @@
       (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))
       (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))
 
-      (wrap-with-circuit-breaker :service-x (fn [] random-guid)) => nil)))
+      (wrap-with-circuit-breaker :service-x (fn [] random-guid)) => nil))
+
+  (fact "it should run the wrapped method when the timeout has expired"
+    (defncircuitbreaker :service-x {:timeout 1 :threshold 1})
+
+    (let [random-guid (guid)]
+      (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))
+      (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))
+
+      (wrap-with-circuit-breaker :service-x (fn [] random-guid)) => nil
+
+      (Thread/sleep 2000)
+
+      (wrap-with-circuit-breaker :service-x (fn [] random-guid)) => random-guid)))
