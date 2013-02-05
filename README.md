@@ -15,7 +15,7 @@ Add the dependency from https://clojars.org/circuit-breaker to your project.clj 
 
 ```clojure
 
-;If it errors more than 2 stop trying the thing until 30 seconds have passed
+;If it errors more than 2 times stop trying the *thing* until 30 seconds have passed
 (defncircuitbreaker :memcache {:timeout 30 :threshold 2})
 
 (wrap-with-circuit-breaker :memcache (fn [] do-something-that-might-exception))
