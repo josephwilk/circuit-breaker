@@ -1,4 +1,4 @@
-(defproject circuit-breaker "0.1.0-SNAPSHOT"
+(defproject circuit-breaker "0.1.1-SNAPSHOT"
   :description "Circuit breaker for Clojure"
   :url "https://github.com/josephwilk/circuit-breaker"
   :license {:name "Eclipse Public License"
