@@ -34,23 +34,23 @@
 (defn- timeout-exceeded? [circuit-name]
   (> (time/in-secs (time/interval (time-since-broken circuit-name) (time/now))) (timeout-in-seconds circuit-name)))
 
-(defn record-failure [circuit-name]
+(defn -record-failure! [circuit-name]
   (inc-counter circuit-name)
   (when (> (failure-count circuit-name) (failure-threshold circuit-name))
     (record-opening! circuit-name)))
 
-(defn record-success [circuit-name]
+(defn -record-success! [circuit-name]
   (reset! (circuit-name @_circuit-breakers-open) nil)
   (reset! (circuit-name @_circuit-breakers-counters) 0))
 
 (defn- closed-circuit-path [circuit-name method-that-might-error default-method]
   (try
     (let [result (method-that-might-error)]
-      (record-success circuit-name)
+      (record-success! circuit-name)
       result)
     (catch Exception e
       (logger/error e)
-      (record-failure circuit-name)
+      (record-failure! circuit-name)
       (when default-method (default-method)))))
 
 (defn tripped? [circuit-name]
