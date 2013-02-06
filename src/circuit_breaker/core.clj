@@ -40,8 +40,8 @@
     (record-opening! circuit-name)))
 
 (defn record-success [circuit-name]
-  (swap! _circuit-breakers-open assoc circuit-name (atom nil))
-  (swap! _circuit-breakers-counters assoc circuit-name (atom 0)))
+  (reset! (circuit-name @_circuit-breakers-open) nil)
+  (reset! (circuit-name @_circuit-breakers-counters) 0))
 
 (defn- closed-circuit-path [circuit-name method-that-might-error default-method]
   (try
