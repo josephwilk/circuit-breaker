@@ -53,6 +53,11 @@
       (record-failure! circuit-name)
       (when default-method (default-method)))))
 
+(defn reset-all-circuits! []
+  (reset! _circuit-breakers-counters {})
+  (reset! _circuit-breakers-config   {})
+  (reset! _circuit-breakers-open     {}))
+
 (defn tripped? [circuit-name]
   (and (breaker-open? circuit-name) (not (timeout-exceeded? circuit-name))))
 

@@ -7,6 +7,8 @@
 (defn guid []
   (str (UUID/randomUUID)))
 
+(background (:before :facts (reset-all-circuits!)))
+
 (facts "defncircuitbreaker"
   (fact "with no errors wrapped method should be called"
     (defncircuitbreaker :service-x {:timeout 30 :threshold 1})
