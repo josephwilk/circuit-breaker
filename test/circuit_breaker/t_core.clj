@@ -9,7 +9,21 @@
 
 (background (:before :facts (reset-all-circuits!)))
 
-(facts "defncircuitbreaker"
+(facts "defncircuitbreaker with multiple circuits"
+  (fact "it should keep different circuits seperate"
+    (defncircuitbreaker :service-y {:timeout 20 :threshold 2})
+    (defncircuitbreaker :service-x {:timeout 30 :threshold 1})
+
+    (let [random-guid (guid)]
+      (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))
+      (wrap-with-circuit-breaker :service-y (fn [] (throw (Exception. "Oh crap"))))
+      (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))
+
+      (wrap-with-circuit-breaker :service-y (fn [] random-guid)) => random-guid
+
+      (wrap-with-circuit-breaker :service-x (fn [] random-guid)) => nil)))
+
+(facts "wrap-with-circuit-breaker"
   (fact "with no errors wrapped method should be called"
     (defncircuitbreaker :service-x {:timeout 30 :threshold 1})
 
@@ -38,20 +52,6 @@
 
       (wrap-with-circuit-breaker :service-x (fn [] random-guid)) => random-guid)))
 
-(facts "defncircuitbreaker with multiple circuits"
-  (fact "it should keep different circuits seperate"
-    (defncircuitbreaker :service-y {:timeout 20 :threshold 2})
-    (defncircuitbreaker :service-x {:timeout 30 :threshold 1})
-
-    (let [random-guid (guid)]
-      (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))
-      (wrap-with-circuit-breaker :service-y (fn [] (throw (Exception. "Oh crap"))))
-      (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))
-
-      (wrap-with-circuit-breaker :service-y (fn [] random-guid)) => random-guid
-
-      (wrap-with-circuit-breaker :service-x (fn [] random-guid)) => nil)))
-
 (facts "wrap-with-circuit-breaker with a default"
   (fact "it should run the default if the method errors"
     (defncircuitbreaker :service-x {:timeout 1 :threshold 1})
@@ -62,3 +62,14 @@
       (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))) (fn [] :default)) => :default
 
       (wrap-with-circuit-breaker :service-x (fn [] random-guid) (fn [] :default)) => :default)))
+
+(facts "with-circuit-breaker"
+  (fact "it executes the connected method based if the circuits is connected"
+    (defncircuitbreaker :test-x {:timeout 1 :threshold 1})
+    (with-circuit-breaker :test-x {:connected (fn [] :connected) :tripped (fn [] :tripped)}) => :connected)
+  (fact "it executes the tripped method if the circuit is tripped"
+    (defncircuitbreaker :test-x {:timeout 1 :threshold 0})
+
+    (wrap-with-circuit-breaker :test-x (fn [] (throw (Exception. "Oh crap"))))
+
+    (with-circuit-breaker :test-x {:connected (fn [] :connected) :tripped (fn [] :tripped)}) => :tripped))

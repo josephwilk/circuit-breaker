@@ -70,3 +70,8 @@
   (if (tripped? circuit-name)
     (when default-method (default-method))
     (closed-circuit-path circuit-name method-that-might-error default-method)))
+
+(defn with-circuit-breaker [circuit {:keys [tripped connected]}]
+  (if (tripped? circuit)
+    (tripped)
+    (connected)))
