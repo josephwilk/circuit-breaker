@@ -73,7 +73,3 @@
     (wrap-with-circuit-breaker :test-x (fn [] (throw (Exception. "Oh crap"))))
 
     (with-circuit-breaker :test-x {:connected (fn [] :connected) :tripped (fn [] :tripped)}) => :tripped))
-
-(facts "wrap-with-circuit on a circuit that does not exist"
-  (fact "empty circuit name should raise an error"
-    (wrap-with-circuit-breaker :funky (fn [] :pants)) => (throws Exception #"There is no circuit called")))
