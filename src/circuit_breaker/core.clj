@@ -36,12 +36,12 @@
 (defn- timeout-exceeded? [circuit-name]
   (> (time/in-secs (time/interval (time-since-broken circuit-name) (time/now))) (timeout-in-seconds circuit-name)))
 
-(defn- record-failure! [circuit-name]
+(defn record-failure! [circuit-name]
   (inc-counter circuit-name)
   (when (> (failure-count circuit-name) (failure-threshold circuit-name))
     (record-opening! circuit-name)))
 
-(defn- record-success! [circuit-name]
+(defn record-success! [circuit-name]
   (reset! (circuit-name @_circuit-breakers-open) nil)
   (reset! (circuit-name @_circuit-breakers-counters) 0))
 
