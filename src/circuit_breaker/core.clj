@@ -3,8 +3,6 @@
     [clj-time.core :as time]
     [clojure.tools.logging :as logger]))
 
-
-
 (def _circuit-breakers-counters (atom {}))
 (def _circuit-breakers-config   (atom {}))
 (def _circuit-breakers-open     (atom {}))
@@ -54,6 +52,10 @@
       (logger/error e)
       (record-failure! circuit-name)
       (when default-method (default-method)))))
+
+(defn reset-all-circuit-counters! []
+  (let [circuits (keys @_circuit-breakers-counters)]
+    (doall (map record-success! circuits))))
 
 (defn reset-all-circuits! []
   (reset! _circuit-breakers-counters {})

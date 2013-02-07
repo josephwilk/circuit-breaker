@@ -73,3 +73,14 @@
     (wrap-with-circuit-breaker :test-x (fn [] (throw (Exception. "Oh crap"))))
 
     (with-circuit-breaker :test-x {:connected (fn [] :connected) :tripped (fn [] :tripped)}) => :tripped))
+
+(facts "reset-all-circuit-counters"
+  (fact "it resets all the counters to 0"
+    (defncircuitbreaker :service-p {:timeout 1 :threshold 1})
+    (wrap-with-circuit-breaker :service-p (fn [] (throw (Exception. "Oh crap"))))
+
+    @(:service-p @_circuit-breakers-counters) => 1
+
+    (reset-all-circuit-counters!)
+
+    @(:service-p @_circuit-breakers-counters) => 0))
