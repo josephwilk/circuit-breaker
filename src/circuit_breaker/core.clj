@@ -3,6 +3,8 @@
     [clj-time.core :as time]
     [clojure.tools.logging :as logger]))
 
+
+
 (def _circuit-breakers-counters (atom {}))
 (def _circuit-breakers-config   (atom {}))
 (def _circuit-breakers-open     (atom {}))
@@ -67,6 +69,8 @@
   (swap! _circuit-breakers-open     merge {circuit-name (atom nil)}))
 
 (defn wrap-with-circuit-breaker [circuit-name method-that-might-error &[default-method]]
+  (when-not (contains? @_circuit-breakers-config circuit-name) (throw (Exception. (str "There is no circuit called: [" circuit-name "]"))))
+
   (if (tripped? circuit-name)
     (when default-method (default-method))
     (closed-circuit-path circuit-name method-that-might-error default-method)))
