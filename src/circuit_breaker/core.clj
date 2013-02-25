@@ -1,7 +1,6 @@
 (ns circuit-breaker.core
   (:require
     [clj-time.core :as time]
-    [clojure.tools.logging :as logger]
     [circuit-breaker.concurrent-map :as concurrent-map]))
 
 (def _circuit-breakers-counters (concurrent-map/new))
