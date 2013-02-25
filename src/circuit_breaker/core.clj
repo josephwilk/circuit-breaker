@@ -1,6 +1,7 @@
 (ns circuit-breaker.core
   (:require
-    [clj-time.core :as time]
+    [clj-time.core                  :as time]
+    [slingshot.slingshot            :refer [try+ throw+]]
     [circuit-breaker.concurrent-map :as concurrent-map]))
 
 (def _circuit-breakers-counters (concurrent-map/new))
@@ -45,13 +46,13 @@
   (concurrent-map/put _circuit-breakers-counters circuit-name 0))
 
 (defn- closed-circuit-path [circuit-name method-that-might-error]
-  (try
+  (try+
     (let [result (method-that-might-error)]
       (record-success! circuit-name)
       result)
-    (catch Exception e
+    (catch Object _
       (record-failure! circuit-name)
-      (throw e))))
+      (throw+))))
 
 (defn reset-all-circuit-counters! []
   (concurrent-map/clear _circuit-breakers-counters))
