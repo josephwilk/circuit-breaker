@@ -9,4 +9,6 @@
   :profiles {:dev {:dependencies [[midje "1.4.0"]
                                   [bultitude "0.1.7"]]
                    :plugins      [[lein-midje "2.0.4"]
-                                  [lein-kibit "0.0.7"]]}})
+                                  [lein-kibit "0.0.7"]
+                                  [jonase/eastwood "0.0.2"]
+                                  [lein-cloverage "1.0.2"]]}})
