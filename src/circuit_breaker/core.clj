@@ -24,7 +24,7 @@
   (let [circuit-count (or (concurrent-map/get circuit-breakers-counters circuit-name) 0)]
     (concurrent-map/put circuit-breakers-counters circuit-name (inc circuit-count))))
 
-(defn- failure-count [circuit-name]
+(defn failure-count [circuit-name]
   (exception-counter circuit-name))
 
 (defn- record-opening! [circuit-name]

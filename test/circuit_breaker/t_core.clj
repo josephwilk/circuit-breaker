@@ -75,8 +75,8 @@
     (defncircuitbreaker :service-p {:timeout 1 :threshold 1})
     (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-p (fn [] (throw (Exception. "Oh crap"))))))
 
-    (concurrent-map/get _circuit-breakers-counters :service-p) => 1
+    (failure-count :service-p) => 1
 
     (reset-all-circuit-counters!)
 
-    (concurrent-map/get _circuit-breakers-counters :service-p) => nil))
+    (failure-count :service-p) => 0))
