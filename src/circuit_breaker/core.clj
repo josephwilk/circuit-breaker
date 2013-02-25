@@ -58,7 +58,7 @@
   (concurrent-map/clear _circuit-breakers-counters))
 
 (defn reset-all-circuits! []
-  (concurrent-map/clear _circuit-breakers-counters)
+  (reset-all-circuit-counters!)
   (concurrent-map/clear _circuit-breakers-config)
   (concurrent-map/clear _circuit-breakers-open))
 
@@ -71,8 +71,7 @@
   (concurrent-map/put _circuit-breakers-config circuit-name settings))
 
 (defn wrap-with-circuit-breaker [circuit-name method-that-might-error]
-  (if (tripped? circuit-name)
-    nil
+ (when-not (tripped? circuit-name)
     (closed-circuit-path circuit-name method-that-might-error)))
 
 (defn with-circuit-breaker [circuit {:keys [tripped connected]}]
