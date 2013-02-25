@@ -31,7 +31,7 @@
   (concurrent-map/put circuit-breakers-open circuit-name (time/now)))
 
 (defn- breaker-open? [circuit-name]
-  (not (not (time-since-broken circuit-name))))
+  (boolean (time-since-broken circuit-name)))
 
 (defn- timeout-exceeded? [circuit-name]
   (> (time/in-secs (time/interval (time-since-broken circuit-name) (time/now))) (timeout-in-seconds circuit-name)))
