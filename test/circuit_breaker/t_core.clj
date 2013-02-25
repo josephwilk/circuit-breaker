@@ -1,7 +1,8 @@
 (ns circuit-breaker.t-core
   (:require
     [midje.sweet :refer :all]
-    [circuit-breaker.core :refer :all])
+    [circuit-breaker.core :refer :all]
+    [circuit-breaker.map :as map])
   (:import java.util.UUID))
 
 (defn guid []
@@ -74,8 +75,8 @@
     (defncircuitbreaker :service-p {:timeout 1 :threshold 1})
     (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-p (fn [] (throw (Exception. "Oh crap"))))))
 
-    @(:service-p @_circuit-breakers-counters) => 1
+    (map/get _circuit-breakers-counters :service-p) => 1
 
     (reset-all-circuit-counters!)
 
-    @(:service-p @_circuit-breakers-counters) => 0))
+    (map/get _circuit-breakers-counters :service-p) => nil))

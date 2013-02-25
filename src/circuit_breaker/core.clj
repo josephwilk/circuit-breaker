@@ -1,32 +1,34 @@
 (ns circuit-breaker.core
   (:require
     [clj-time.core :as time]
-    [clojure.tools.logging :as logger]))
+    [clojure.tools.logging :as logger]
+    [circuit-breaker.map :as map]))
 
-(def _circuit-breakers-counters (atom {}))
-(def _circuit-breakers-config   (atom {}))
-(def _circuit-breakers-open     (atom {}))
+(def _circuit-breakers-counters (map/new-map))
+(def _circuit-breakers-config   (map/new-map))
+(def _circuit-breakers-open     (map/new-map))
 
 (defn- failure-threshold [circuit-name]
-  (:threshold @(circuit-name @_circuit-breakers-config)))
+  (:threshold (map/get _circuit-breakers-config circuit-name)))
 
 (defn- timeout-in-seconds [circuit-name]
-  (:timeout @(circuit-name @_circuit-breakers-config)))
+  (:timeout (map/get _circuit-breakers-config circuit-name)))
 
 (defn- time-since-broken [circuit-name]
-  @(circuit-name @_circuit-breakers-open))
+  (map/get _circuit-breakers-open circuit-name))
 
 (defn- exception-counter [circuit-name]
-  @(circuit-name @_circuit-breakers-counters))
+  (or (map/get _circuit-breakers-counters circuit-name) 0))
 
 (defn- inc-counter [circuit-name]
-  (swap! (circuit-name @_circuit-breakers-counters) inc))
+  (let [circuit-count (or (map/get _circuit-breakers-counters circuit-name) 0)]
+    (map/put _circuit-breakers-counters circuit-name (inc circuit-count))))
 
 (defn- failure-count [circuit-name]
   (exception-counter circuit-name))
 
 (defn- record-opening! [circuit-name]
-  (swap! _circuit-breakers-open assoc circuit-name (atom(time/now))))
+  (map/put _circuit-breakers-open circuit-name (time/now)))
 
 (defn- breaker-open? [circuit-name]
   (not (not (time-since-broken circuit-name))))
@@ -40,8 +42,8 @@
     (record-opening! circuit-name)))
 
 (defn record-success! [circuit-name]
-  (reset! (circuit-name @_circuit-breakers-open) nil)
-  (reset! (circuit-name @_circuit-breakers-counters) 0))
+  (map/put _circuit-breakers-open circuit-name nil)
+  (map/put _circuit-breakers-counters circuit-name 0))
 
 (defn- closed-circuit-path [circuit-name method-that-might-error]
   (try
@@ -53,21 +55,19 @@
       (throw e))))
 
 (defn reset-all-circuit-counters! []
-  (let [circuits (keys @_circuit-breakers-counters)]
-    (doall (map record-success! circuits))))
+  (map/clear _circuit-breakers-counters))
 
 (defn reset-all-circuits! []
-  (reset! _circuit-breakers-counters {})
-  (reset! _circuit-breakers-config   {})
-  (reset! _circuit-breakers-open     {}))
+  (map/clear _circuit-breakers-counters)
+  (map/clear _circuit-breakers-config)
+  (map/clear _circuit-breakers-open))
 
 (defn tripped? [circuit-name]
   (and (breaker-open? circuit-name) (not (timeout-exceeded? circuit-name))))
 
 (defn defncircuitbreaker [circuit-name settings]
-  (swap! _circuit-breakers-counters merge {circuit-name (atom 0)})
-  (swap! _circuit-breakers-config   merge {circuit-name (atom settings)})
-  (swap! _circuit-breakers-open     merge {circuit-name (atom nil)}))
+  (map/put _circuit-breakers-counters circuit-name 0)
+  (map/put _circuit-breakers-config circuit-name settings))
 
 (defn wrap-with-circuit-breaker [circuit-name method-that-might-error]
   (if (tripped? circuit-name)
