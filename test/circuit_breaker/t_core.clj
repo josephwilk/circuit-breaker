@@ -2,7 +2,7 @@
   (:require
     [midje.sweet :refer :all]
     [circuit-breaker.core :refer :all]
-    [circuit-breaker.map :as map])
+    [circuit-breaker.concurrent-map :as concurrent-map])
   (:import java.util.UUID))
 
 (defn guid []
@@ -75,8 +75,8 @@
     (defncircuitbreaker :service-p {:timeout 1 :threshold 1})
     (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-p (fn [] (throw (Exception. "Oh crap"))))))
 
-    (map/get _circuit-breakers-counters :service-p) => 1
+    (concurrent-map/get _circuit-breakers-counters :service-p) => 1
 
     (reset-all-circuit-counters!)
 
-    (map/get _circuit-breakers-counters :service-p) => nil))
+    (concurrent-map/get _circuit-breakers-counters :service-p) => nil))

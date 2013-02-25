@@ -1,8 +1,8 @@
-(ns circuit-breaker.map
-  (:refer-clojure :exclude [keys get])
+(ns circuit-breaker.concurrent-map
+  (:refer-clojure :exclude [keys get remove])
   (:import java.util.concurrent.ConcurrentHashMap))
 
-(defn new-map []
+(defn new []
   (ConcurrentHashMap.))
 
 (defn put [map key value]
@@ -16,3 +16,6 @@
 
 (defn keys [map]
   (.keys map))
+
+(defn remove [map key]
+  (.remove map key))
