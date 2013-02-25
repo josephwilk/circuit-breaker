@@ -14,8 +14,5 @@
 (defn clear [map]
   (.clear map))
 
-(defn keys [map]
-  (.keys map))
-
 (defn remove [map key]
   (.remove map key))
