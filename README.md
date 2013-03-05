@@ -6,13 +6,6 @@ A Clojure library for the circuit breaker pattern:
 
 http://en.wikipedia.org/wiki/Circuit_breaker_design_pattern
 
-##Compatibilty
-
-Tested against:
-* Clojure 1.3
-* Clojure 1.4
-* Clojure 1.5
-
 ##Installation
 
 Add the dependency from https://clojars.org/circuit-breaker to your project.clj file
@@ -29,6 +22,18 @@ Add the dependency from https://clojars.org/circuit-breaker to your project.clj 
 ;Testing a circuit outside of the wrap-with-circuit-breaker
 (with-circuit-breaker :memcache {:connected (fn [] "ok") :tripped (fn [] "panic")})
 ```
+
+##Compatibilty
+
+Tested against:
+* Java 6
+* Java 7
+
+Clojure versions:
+
+* Clojure 1.3
+* Clojure 1.4
+* Clojure 1.5
 
 ##License
 (The MIT License)
