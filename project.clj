@@ -6,9 +6,15 @@
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [clj-time "0.4.4"]
                  [slingshot "0.10.3"]]
+
+  :aliases {"compatibility" ["with-profile" "1.4:1.5" "test"]}
+
   :profiles {:dev {:dependencies [[midje "1.4.0"]
                                   [bultitude "0.1.7"]]
                    :plugins      [[lein-midje "2.0.4"]
                                   [lein-kibit "0.0.7"]
                                   [jonase/eastwood "0.0.2"]
-                                  [lein-cloverage "1.0.2"]]}})
+                                  [lein-cloverage "1.0.2"]]}
+
+             :1.4 {:dependencies [[org.clojure/clojure "1.4.0"] [midje "1.4.0"] [bultitude "0.1.7"]]}
+             :1.5 {:dependencies [[org.clojure/clojure "1.5.0-RC17"] [midje "1.4.0"] [bultitude "0.1.7"]]}})
