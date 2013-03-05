@@ -26,8 +26,8 @@ Add the dependency from https://clojars.org/circuit-breaker to your project.clj 
 ##Compatibilty
 
 Tested against:
-* Java 6
-* Java 7
+* openjdk7
+* oraclejdk7
 
 Clojure versions:
 
