@@ -9,6 +9,7 @@ http://en.wikipedia.org/wiki/Circuit_breaker_design_pattern
 ##Compatibilty
 
 Tested against:
+* Clojure 1.3
 * Clojure 1.4
 * Clojure 1.5
 

@@ -1,7 +1,8 @@
 (ns circuit-breaker.core
+  (:use
+    [slingshot.slingshot])
   (:require
     [clj-time.core                  :as time]
-    [slingshot.slingshot            :refer [try+ throw+]]
     [circuit-breaker.concurrent-map :as concurrent-map]))
 
 (def circuit-breakers-counters (concurrent-map/new))

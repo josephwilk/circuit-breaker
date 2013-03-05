@@ -1,7 +1,8 @@
 (ns circuit-breaker.t-core
+  (:use
+    [midje.sweet]
+    [circuit-breaker.core])
   (:require
-    [midje.sweet :refer :all]
-    [circuit-breaker.core :refer :all]
     [circuit-breaker.concurrent-map :as concurrent-map])
   (:import java.util.UUID))
 
