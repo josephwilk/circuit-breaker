@@ -1,4 +1,4 @@
-(ns circuit-breaker.t-core
+(ns circuit-breaker.core_test
   (:use
     [midje.sweet]
     [circuit-breaker.core])
@@ -35,7 +35,8 @@
     (defncircuitbreaker :service-x {:timeout 30 :threshold 1})
 
     (let [random-guid (guid)]
-      (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-x (fn [] random-guid)))) => random-guid))
+      (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-x (fn [] random-guid)))) => random-guid
+      (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-x (fn [] random-guid) (fn [] :error)))) => random-guid))
 
   (fact "it should not run the wrapped method when the number of errors is greater than the threshold and the timeout has not expired"
     (defncircuitbreaker :service-x {:timeout 30 :threshold 1})
@@ -44,16 +45,18 @@
       (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))))
       (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))))
 
-      (hoover-exceptions (fn [](wrap-with-circuit-breaker :service-x (fn [] random-guid)))) => nil))
+      (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-x (fn [] random-guid)))) => nil
+      (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-x (fn [] random-guid) (fn [] :error)))) => :error))
 
   (fact "it should run the wrapped method when the timeout has expired"
     (defncircuitbreaker :service-x {:timeout 1 :threshold 1})
 
     (let [random-guid (guid)]
-      (hoover-exceptions (fn [](wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))))
+      (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))))
       (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-x (fn [] (throw (Exception. "Oh crap"))))))
 
-      (hoover-exceptions (fn [](wrap-with-circuit-breaker :service-x (fn [] random-guid)))) => nil
+      (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-x (fn [] random-guid)))) => nil
+      (hoover-exceptions (fn [] (wrap-with-circuit-breaker :service-x (fn [] random-guid) (fn [] :error)))) => :error
 
       (Thread/sleep 2000)
 

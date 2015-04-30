@@ -14,12 +14,16 @@ Add the dependency from https://clojars.org/circuit-breaker to your project.clj 
 
 ```clojure
 
-;If it errors more than 2 times stop trying the *thing* until 30 seconds have passed
+;; If it errors more than 2 times stop trying the *thing* until 30 seconds have passed
 (defncircuitbreaker :memcache {:timeout 30 :threshold 2})
 
+;; Run function, returning `nil` if :memcache is already tripped
 (wrap-with-circuit-breaker :memcache (fn [] do-something-that-might-exception))
 
-;Testing a circuit outside of the wrap-with-circuit-breaker
+;; Run function, returning result of (fn [] do-thing-when-tripped) if already tripped
+(wrap-with-circuit-breaker :memcache (fn [] do-something-that-might-exception) (fn [] do-thing-when-tripped))
+
+;; Testing a circuit outside of the wrap-with-circuit-breaker
 (with-circuit-breaker :memcache {:connected (fn [] "ok") :tripped (fn [] "panic")})
 ```
 
@@ -34,6 +38,7 @@ Clojure versions:
 * Clojure 1.3
 * Clojure 1.4
 * Clojure 1.5
+* Clojure 1.6
 
 ##License
 (The MIT License)

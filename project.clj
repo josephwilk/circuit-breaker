@@ -1,4 +1,4 @@
-(defproject circuit-breaker "0.1.7"
+(defproject circuit-breaker "0.1.8-SNAPSHOT"
   :description "Circuit breaker for Clojure"
   :url "https://github.com/josephwilk/circuit-breaker"
   :license {:name "Eclipse Public License"
@@ -18,4 +18,5 @@
 
              :1.3 {:dependencies [[org.clojure/clojure "1.3.0"]]}
              :1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
-             :1.5 {:dependencies [[org.clojure/clojure "1.5.0-RC17"]]}})
+             :1.5 {:dependencies [[org.clojure/clojure "1.5.0"]]}
+             :1.6 {:dependencies [[org.clojure/clojure "1.6.0"]]}})

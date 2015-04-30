@@ -71,11 +71,22 @@
   (concurrent-map/put circuit-breakers-counters circuit-name 0)
   (concurrent-map/put circuit-breakers-config circuit-name settings))
 
-(defn wrap-with-circuit-breaker [circuit-name method-that-might-error]
- (when-not (tripped? circuit-name)
-    (closed-circuit-path circuit-name method-that-might-error)))
+(defn wrap-with-circuit-breaker
+  "If specified circuit breaker isn't tripped, run method-that-might-error. If
+  circuit breaker is tripped, run tripped-method if specified, else return
+  nil."
+  ([circuit-name method-that-might-error]
+   (when-not (tripped? circuit-name)
+     (closed-circuit-path circuit-name method-that-might-error)))
+  ([circuit-name method-that-might-error tripped-method]
+   (if (tripped? circuit-name)
+     (tripped-method)
+     (closed-circuit-path circuit-name method-that-might-error))))
 
-(defn with-circuit-breaker [circuit {:keys [tripped connected]}]
+(defn with-circuit-breaker
+  "If circuit breaker is tripped, run tripped, else run connected. If the
+  connected function throws an error, it won't cause the circuit to trip."
+  [circuit {:keys [tripped connected]}]
   (if (tripped? circuit)
     (tripped)
     (connected)))
