@@ -1,8 +1,8 @@
 (defproject circuit-breaker "0.1.8-SNAPSHOT"
   :description "Circuit breaker for Clojure"
   :url "https://github.com/josephwilk/circuit-breaker"
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :license {:name "MIT"
+            :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [clj-time "0.4.4"]
                  [slingshot "0.10.3"]]
