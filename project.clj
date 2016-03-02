@@ -3,11 +3,11 @@
   :url "https://github.com/josephwilk/circuit-breaker"
   :license {:name "MIT"
             :url "https://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.4.0"]
-                 [clj-time "0.4.4"]
-                 [slingshot "0.10.3"]]
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [clj-time "0.11.0"]
+                 [slingshot "0.12.2"]]
 
-  :aliases {"compatibility" ["with-profile" "1.4:1.5" "test"]}
+  :aliases {"compatibility" ["with-profile" "1.4:1.5:1.6:1.7:1.8" "test"]}
 
   :profiles {:dev {:dependencies [[midje "1.4.0"]
                                   [bultitude "0.1.7"]]
@@ -15,8 +15,8 @@
                                   [lein-kibit "0.0.7"]
                                   [jonase/eastwood "0.0.2"]
                                   [lein-cloverage "1.0.2"]]}
-
-             :1.3 {:dependencies [[org.clojure/clojure "1.3.0"]]}
-             :1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
-             :1.5 {:dependencies [[org.clojure/clojure "1.5.0"]]}
-             :1.6 {:dependencies [[org.clojure/clojure "1.6.0"]]}})
+             :1.4 [:dev {:dependencies [[org.clojure/clojure "1.4.0"]]}]
+             :1.5 [:dev {:dependencies [[org.clojure/clojure "1.5.0"]]}]
+             :1.6 [:dev {:dependencies [[org.clojure/clojure "1.6.0"]]}]
+             :1.7 [:dev {:dependencies [[org.clojure/clojure "1.7.0"]]}]
+             :1.8 [:dev {:dependencies [[org.clojure/clojure "1.8.0"]]}]})
