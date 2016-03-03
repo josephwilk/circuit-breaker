@@ -35,10 +35,11 @@ Tested against:
 
 Clojure versions:
 
-* Clojure 1.3
 * Clojure 1.4
 * Clojure 1.5
 * Clojure 1.6
+* Clojure 1.7
+* Clojure 1.8
 
 ##License
 (The MIT License)

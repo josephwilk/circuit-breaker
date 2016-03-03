@@ -35,7 +35,7 @@
   (boolean (time-since-broken circuit-name)))
 
 (defn- timeout-exceeded? [circuit-name]
-  (> (time/in-secs (time/interval (time-since-broken circuit-name) (time/now))) (timeout-in-seconds circuit-name)))
+  (> (time/in-seconds (time/interval (time-since-broken circuit-name) (time/now))) (timeout-in-seconds circuit-name)))
 
 (defn record-failure! [circuit-name]
   (inc-counter circuit-name)
