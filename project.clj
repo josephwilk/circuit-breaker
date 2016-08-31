@@ -1,4 +1,4 @@
-(defproject circuit-breaker "0.1.8-SNAPSHOT"
+(defproject circuit-breaker "0.1.8"
   :description "Circuit breaker for Clojure"
   :url "https://github.com/josephwilk/circuit-breaker"
   :license {:name "MIT"

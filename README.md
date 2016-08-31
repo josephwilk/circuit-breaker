@@ -10,6 +10,10 @@ http://en.wikipedia.org/wiki/Circuit_breaker_design_pattern
 
 Add the dependency from https://clojars.org/circuit-breaker to your project.clj file
 
+```clojure
+[circuit-breaker "0.1.8"]
+```
+
 ## Usage
 
 ```clojure
