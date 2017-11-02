@@ -6,7 +6,7 @@ A Clojure library for the circuit breaker pattern:
 
 http://en.wikipedia.org/wiki/Circuit_breaker_design_pattern
 
-##Installation
+## Installation
 
 Add the dependency from https://clojars.org/circuit-breaker to your project.clj file
 
@@ -31,7 +31,7 @@ Add the dependency from https://clojars.org/circuit-breaker to your project.clj 
 (with-circuit-breaker :memcache {:connected (fn [] "ok") :tripped (fn [] "panic")})
 ```
 
-##Compatibilty
+## Compatibilty
 
 Tested against:
 * openjdk7
@@ -45,10 +45,10 @@ Clojure versions:
 * Clojure 1.7
 * Clojure 1.8
 
-##License
+## License
 (The MIT License)
 
-Copyright (c) 2014-2016 Joseph Wilk
+Copyright (c) 2014-current Joseph Wilk
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
